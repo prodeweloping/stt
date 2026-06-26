@@ -15,8 +15,8 @@
     <meta property="og:description" content="Real-time speech recognition with multi-language support, copy, download, and a beautiful glassmorphism interface." />
     <meta property="og:type" content="website" />
 
-    <!-- Font Awesome 6.5.0 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome 6.7.2 (latest stable) – CDN without integrity issues -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -89,7 +89,6 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             padding-top: 76px;
-            /* space for fixed navbar */
             padding-bottom: 0;
         }
 
@@ -103,7 +102,6 @@
             right: 0;
             z-index: 999;
             background: rgba(255, 255, 255, 0.98);
-            /* solid white with slight transparency */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             padding: 12px 25px;
             display: flex;
@@ -166,14 +164,225 @@
         main {
             flex: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 20px 16px 30px;
             width: 100%;
+            gap: 20px;
         }
 
         /* ============================================================
-                   App Container – Glassmorphism Card
+                   VOICE TOOLS SECTION – Glassmorphism Card
+                   ============================================================ */
+        .voice-tools-section {
+            width: 100%;
+            max-width: 820px;
+            background: var(--card-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--card-border);
+            border-radius: var(--glass-radius);
+            box-shadow: var(--card-shadow);
+            padding: 20px 24px 22px;
+            transition: background var(--transition), border var(--transition), box-shadow var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voice-tools-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -15%;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .voice-tools-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+        }
+
+        .voice-tools-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .voice-tools-header h2 i {
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        .voice-tools-header .header-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--input-bg);
+            padding: 4px 14px;
+            border-radius: 40px;
+            border: 1px solid var(--input-border);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        /* Tool Cards Grid */
+        .voice-tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-card {
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 18px;
+            padding: 18px 20px 16px;
+            transition: all var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            min-height: 120px;
+        }
+
+        .tool-card:hover:not(.active) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.70);
+        }
+
+        .tool-card:active:not(.active) {
+            transform: translateY(0px);
+        }
+
+        .tool-card.active {
+            border-color: var(--accent);
+            background: rgba(90, 82, 217, 0.06);
+            box-shadow: 0 0 0 3px var(--accent-glow), 0 8px 24px rgba(90, 82, 217, 0.08);
+            cursor: default;
+        }
+
+        .tool-card .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 3px 12px;
+            border-radius: 40px;
+            align-self: flex-start;
+            margin-bottom: 10px;
+            background: var(--text-muted);
+            color: #fff;
+            transition: all var(--transition);
+        }
+
+        .tool-card.active .tool-badge {
+            background: var(--accent);
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+
+        .tool-card .tool-badge.new-badge {
+            background: var(--warning);
+            color: #1a1633;
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(0.96);
+            }
+        }
+
+        .tool-card .tool-icon-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .tool-card .tool-icon {
+            font-size: 26px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(90, 82, 217, 0.08);
+            border-radius: 14px;
+            color: var(--accent);
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+
+        .tool-card.active .tool-icon {
+            background: rgba(90, 82, 217, 0.14);
+        }
+
+        .tool-card .tool-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
+
+        .tool-card .tool-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        .tool-card .tool-arrow {
+            margin-top: auto;
+            align-self: flex-end;
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: all var(--transition);
+            opacity: 0.5;
+        }
+
+        .tool-card:hover:not(.active) .tool-arrow {
+            opacity: 1;
+            transform: translateX(4px);
+            color: var(--accent);
+        }
+
+        .tool-card.active .tool-arrow {
+            opacity: 0;
+        }
+
+        /* ============================================================
+                   APP CONTAINER – Glassmorphism Card (Speech to Text)
                    ============================================================ */
         .app-container {
             width: 100%;
@@ -206,7 +415,7 @@
         }
 
         /* ============================================================
-                   FOOTER – Original Dark Blue (from snippet)
+                   FOOTER – Original Dark Blue
                    ============================================================ */
         footer {
             background: #0b1426;
@@ -245,7 +454,7 @@
         }
 
         /* ============================================================
-                   All existing app styles (preserved below)
+                   All existing app styles (preserved)
                    ============================================================ */
 
         /* Header */
@@ -568,30 +777,22 @@
             }
         }
 
-        /* Buttons */
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-            z-index: 1;
-            margin-bottom: 6px;
-        }
-
+        /* ============================================================
+                   BUTTONS — MODERN SQUARE DESIGN (border-radius: 12px)
+                   ============================================================ */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
-            border-radius: 40px;
+            padding: 12px 22px;
+            border-radius: 12px;
             font-family: var(--font-family);
             font-size: 14px;
             font-weight: 600;
             border: none;
             cursor: pointer;
-            transition: all var(--transition);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--input-bg);
             color: var(--text-primary);
             border: 1px solid var(--input-border);
@@ -600,32 +801,49 @@
             user-select: none;
             position: relative;
             min-height: 48px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            line-height: 1.2;
         }
 
         .btn i {
             font-size: 16px;
+            flex-shrink: 0;
+            line-height: 1;
         }
 
+        .btn .btn-label {
+            display: inline-block;
+        }
+
+        /* Hover: lift + subtle shadow */
         .btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+            border-color: var(--text-muted);
         }
 
+        /* Active: press down */
         .btn:active:not(:disabled) {
             transform: translateY(0px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
+        /* Focus: professional ring */
+        .btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-color: var(--accent);
+        }
+
+        /* Disabled */
         .btn:disabled {
             opacity: 0.45;
             cursor: not-allowed;
             transform: none !important;
+            box-shadow: none !important;
         }
 
-        .btn:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 3px;
-        }
-
+        /* ---- Primary (accent) ---- */
         .btn-primary {
             background: var(--accent);
             color: #fff;
@@ -639,52 +857,59 @@
             box-shadow: 0 8px 28px var(--accent-glow);
         }
 
+        /* ---- Danger ---- */
         .btn-danger {
             background: var(--danger);
             color: #fff;
             border-color: var(--danger);
-            box-shadow: 0 4px 16px rgba(229, 90, 106, 0.25);
+            box-shadow: 0 4px 16px rgba(229, 90, 106, 0.20);
         }
 
         .btn-danger:hover:not(:disabled) {
             background: #cc4a5a;
             border-color: #cc4a5a;
-            box-shadow: 0 8px 28px rgba(229, 90, 106, 0.30);
+            box-shadow: 0 8px 28px rgba(229, 90, 106, 0.28);
         }
 
+        /* ---- Success ---- */
         .btn-success {
             background: var(--success);
             color: #0d0a1a;
             border-color: var(--success);
-            box-shadow: 0 4px 16px rgba(59, 201, 110, 0.20);
+            box-shadow: 0 4px 16px rgba(59, 201, 110, 0.16);
         }
 
         .btn-success:hover:not(:disabled) {
             background: #2eb85e;
             border-color: #2eb85e;
+            box-shadow: 0 8px 28px rgba(59, 201, 110, 0.24);
         }
 
+        /* ---- Ghost (transparent) ---- */
         .btn-ghost {
             background: transparent;
             border-color: transparent;
+            box-shadow: none;
         }
 
         .btn-ghost:hover:not(:disabled) {
             background: var(--input-bg);
             border-color: var(--input-border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
         }
 
+        /* ---- Record Button (square, same style) ---- */
         .btn-record {
-            padding: 10px 28px;
+            padding: 12px 28px;
             font-size: 16px;
-            min-height: 56px;
-            min-width: 140px;
-            border-radius: 50px;
+            min-height: 52px;
+            min-width: 160px;
             gap: 12px;
+            border-radius: 12px;
             background: var(--accent);
             color: #fff;
             border-color: var(--accent);
-            box-shadow: 0 4px 24px var(--accent-glow);
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
 
         .btn-record i {
@@ -694,39 +919,72 @@
         .btn-record:hover:not(:disabled) {
             background: var(--accent-hover);
             border-color: var(--accent-hover);
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 36px var(--accent-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px var(--accent-glow);
+        }
+
+        .btn-record:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 16px var(--accent-glow);
         }
 
         .btn-record.is-recording {
             background: var(--danger);
             border-color: var(--danger);
-            box-shadow: 0 4px 24px rgba(229, 90, 106, 0.30);
+            box-shadow: 0 4px 20px rgba(229, 90, 106, 0.30);
             animation: pulse-record 1.8s ease-in-out infinite;
         }
 
         .btn-record.is-recording:hover:not(:disabled) {
             background: #cc4a5a;
             border-color: #cc4a5a;
-            box-shadow: 0 8px 36px rgba(229, 90, 106, 0.35);
+            box-shadow: 0 8px 32px rgba(229, 90, 106, 0.36);
+        }
+
+        .btn-record.is-recording:active:not(:disabled) {
+            box-shadow: 0 4px 20px rgba(229, 90, 106, 0.30);
         }
 
         @keyframes pulse-record {
             0%,
             100% {
-                box-shadow: 0 4px 24px rgba(229, 90, 106, 0.30);
+                box-shadow: 0 4px 20px rgba(229, 90, 106, 0.30);
             }
             50% {
-                box-shadow: 0 4px 48px rgba(229, 90, 106, 0.50), 0 0 0 8px rgba(229, 90, 106, 0.08);
+                box-shadow: 0 4px 40px rgba(229, 90, 106, 0.48), 0 0 0 6px rgba(229, 90, 106, 0.08);
             }
         }
 
+        /* ---- Button Group spacing ---- */
         .btn-group {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 8px;
             margin-left: auto;
+        }
+
+        /* ---- Keyboard hint inside app ---- */
+        .keyboard-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--input-bg);
+            padding: 4px 14px;
+            border-radius: 40px;
+            border: 1px solid var(--input-border);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .keyboard-hint kbd {
+            background: rgba(26, 22, 51, 0.06);
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-family: var(--font-family);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
         }
 
         /* Compatibility Banner */
@@ -774,29 +1032,6 @@
             color: var(--success);
         }
 
-        /* Keyboard hint inside app */
-        .keyboard-hint {
-            font-size: 11px;
-            color: var(--text-muted);
-            background: var(--input-bg);
-            padding: 4px 12px;
-            border-radius: 40px;
-            border: 1px solid var(--input-border);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .keyboard-hint kbd {
-            background: rgba(26, 22, 51, 0.06);
-            padding: 1px 8px;
-            border-radius: 4px;
-            font-family: var(--font-family);
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
         /* ============================================================
                    Responsive
                    ============================================================ */
@@ -811,6 +1046,29 @@
             }
             .logo {
                 font-size: 26px;
+            }
+            .voice-tools-section {
+                padding: 16px 18px 18px;
+            }
+            .voice-tools-grid {
+                gap: 12px;
+            }
+            .tool-card {
+                padding: 14px 16px 12px;
+                min-height: 100px;
+                border-radius: 18px;
+            }
+            .tool-card .tool-title {
+                font-size: 14px;
+            }
+            .tool-card .tool-desc {
+                font-size: 12px;
+            }
+            .tool-card .tool-icon {
+                font-size: 22px;
+                width: 38px;
+                height: 38px;
+                border-radius: 14px;
             }
             .app-container {
                 padding: 20px 20px 18px;
@@ -830,14 +1088,16 @@
             }
             .btn {
                 font-size: 13px;
-                padding: 8px 16px;
-                min-height: 42px;
+                padding: 10px 18px;
+                min-height: 44px;
+                border-radius: 12px;
             }
             .btn-record {
-                min-height: 48px;
-                min-width: 120px;
-                font-size: 14px;
-                padding: 8px 22px;
+                min-height: 50px;
+                min-width: 140px;
+                font-size: 15px;
+                padding: 10px 24px;
+                border-radius: 12px;
             }
             .transcription-box {
                 min-height: 160px;
@@ -886,6 +1146,47 @@
             .home-btn .label {
                 font-size: 9px;
             }
+
+            .voice-tools-section {
+                padding: 14px 14px 16px;
+                border-radius: 20px;
+            }
+            .voice-tools-header h2 {
+                font-size: 16px;
+            }
+            .voice-tools-header .header-badge {
+                font-size: 10px;
+                padding: 2px 12px;
+            }
+            .voice-tools-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .tool-card {
+                padding: 12px 12px 10px;
+                min-height: 90px;
+                border-radius: 18px;
+            }
+            .tool-card .tool-title {
+                font-size: 13px;
+            }
+            .tool-card .tool-desc {
+                font-size: 11px;
+            }
+            .tool-card .tool-icon {
+                font-size: 20px;
+                width: 34px;
+                height: 34px;
+                border-radius: 14px;
+            }
+            .tool-card .tool-badge {
+                font-size: 9px;
+                padding: 2px 10px;
+            }
+            .tool-card .tool-arrow {
+                font-size: 12px;
+            }
+
             .app-container {
                 padding: 16px 14px 14px;
                 border-radius: 20px;
@@ -964,11 +1265,12 @@
             }
             .btn {
                 font-size: 13px;
-                padding: 10px 14px;
+                padding: 10px 16px;
                 min-height: 44px;
                 flex: 1 1 auto;
                 justify-content: center;
-                min-width: 60px;
+                min-width: 70px;
+                border-radius: 12px;
             }
             .btn-record {
                 min-height: 52px;
@@ -976,6 +1278,7 @@
                 width: 100%;
                 font-size: 15px;
                 padding: 10px 20px;
+                border-radius: 12px;
             }
 
             .compat-banner {
@@ -1006,6 +1309,50 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .voice-tools-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .tool-card {
+                min-height: 70px;
+                flex-direction: row;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 14px;
+                border-radius: 18px;
+            }
+            .tool-card .tool-badge {
+                margin-bottom: 0;
+                order: 3;
+                margin-left: auto;
+                flex-shrink: 0;
+            }
+            .tool-card .tool-icon-wrap {
+                margin-bottom: 0;
+                flex-shrink: 0;
+            }
+            .tool-card .tool-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 18px;
+                border-radius: 14px;
+            }
+            .tool-card .tool-info {
+                flex: 1;
+            }
+            .tool-card .tool-title {
+                font-size: 14px;
+            }
+            .tool-card .tool-desc {
+                font-size: 11px;
+                margin-top: 0;
+            }
+            .tool-card .tool-arrow {
+                display: none;
+            }
+        }
+
         @media (max-width: 380px) {
             .app-container {
                 padding: 12px 10px 10px;
@@ -1015,8 +1362,15 @@
             }
             .btn {
                 font-size: 12px;
-                padding: 8px 10px;
+                padding: 8px 12px;
                 min-height: 38px;
+                border-radius: 10px;
+            }
+            .btn-record {
+                font-size: 14px;
+                padding: 8px 16px;
+                min-height: 46px;
+                border-radius: 10px;
             }
             .transcription-box {
                 font-size: 13px;
@@ -1040,6 +1394,32 @@
             body {
                 padding-top: 50px;
             }
+            .voice-tools-section {
+                padding: 10px 10px 12px;
+            }
+            .voice-tools-header h2 {
+                font-size: 14px;
+            }
+            .tool-card {
+                padding: 8px 10px;
+                min-height: 60px;
+                border-radius: 18px;
+            }
+            .tool-card .tool-title {
+                font-size: 12px;
+            }
+            .tool-card .tool-desc {
+                font-size: 10px;
+            }
+            .tool-card .tool-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+                border-radius: 14px;
+            }
+            .keyboard-hint {
+                display: none;
+            }
         }
 
         /* ============================================================
@@ -1062,6 +1442,18 @@
             .interim-container .interim-cursor {
                 animation: none;
                 opacity: 1;
+            }
+            .tool-card .tool-badge.new-badge {
+                animation: none;
+            }
+            .btn:hover:not(:disabled) {
+                transform: none !important;
+            }
+            .btn-record:hover:not(:disabled) {
+                transform: none !important;
+            }
+            .tool-card:hover:not(.active) {
+                transform: none !important;
             }
         }
 
@@ -1090,7 +1482,7 @@
 <body>
 
     <!-- ============================================================
-    NAVBAR – Original Solid White (from snippet)
+    NAVBAR – Original Solid White
     ============================================================ -->
     <nav class="new-nav" aria-label="Main navigation">
         <div class="logo">
@@ -1109,9 +1501,73 @@
     </nav>
 
     <!-- ============================================================
-    MAIN CONTENT – Speech to Text Tool
+    MAIN CONTENT
     ============================================================ -->
     <main>
+
+        <!-- ============================================================
+        VOICE TOOLS SECTION – Navigation between tools
+        ============================================================ -->
+        <section class="voice-tools-section" aria-label="Voice Tools navigation">
+            <div class="voice-tools-header">
+                <h2>
+                    <i class="fas fa-wave-square" aria-hidden="true"></i>
+                    Voice Tools
+                </h2>
+                <span class="header-badge">
+                    <i class="fas fa-arrows-left-right" aria-hidden="true"></i>
+                    Switch tool
+                </span>
+            </div>
+
+            <div class="voice-tools-grid">
+
+                <!-- Speech to Text Card (active / first) -->
+                <div class="tool-card active" id="sttCard" aria-current="page">
+                    <span class="tool-badge">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                        CURRENT TOOL
+                    </span>
+                    <div class="tool-icon-wrap">
+                        <span class="tool-icon" aria-hidden="true">
+                            <i class="fas fa-microphone"></i>
+                        </span>
+                        <div class="tool-info">
+                            <div class="tool-title">Speech to Text</div>
+                            <div class="tool-desc">Convert your voice into text instantly.</div>
+                        </div>
+                    </div>
+                    <span class="tool-arrow" aria-hidden="true">
+                        <i class="fas fa-check-circle" style="color:var(--accent);"></i>
+                    </span>
+                </div>
+
+                <!-- Text to Speech Card (second) -->
+                <a href="https://tts.protoolss.online" target="_blank" rel="noopener noreferrer" class="tool-card" id="ttsCard" aria-label="Go to Text to Speech tool">
+                    <span class="tool-badge">
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        OPEN
+                    </span>
+                    <div class="tool-icon-wrap">
+                        <span class="tool-icon" aria-hidden="true">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                        <div class="tool-info">
+                            <div class="tool-title">Text to Speech</div>
+                            <div class="tool-desc">Convert text into natural speech.</div>
+                        </div>
+                    </div>
+                    <span class="tool-arrow" aria-hidden="true">
+                        <i class="fas fa-external-link-alt"></i>
+                    </span>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+        APP CONTAINER – Speech to Text Tool
+        ============================================================ -->
         <div class="app-container" role="main" aria-label="Speech to Text Tool">
 
             <!-- ============================================================
@@ -1127,7 +1583,6 @@
                         <span class="subtitle">Real-time voice transcription</span>
                     </div>
                 </div>
-                <!-- Theme toggle removed as requested -->
             </header>
 
             <!-- ============================================================
@@ -1145,7 +1600,7 @@
                     <span class="status-value timer" id="timerDisplay">00:00</span>
                 </div>
                 <div class="status-stats">
-                    <span><i class="fas fa-word-simple" aria-hidden="true"></i> <span id="wordCount">0</span></span>
+                    <span><i class="fas fa-words" aria-hidden="true"></i> <span id="wordCount">0</span></span>
                     <span><i class="fas fa-font" aria-hidden="true"></i> <span id="charCount">0</span></span>
                 </div>
             </section>
@@ -1225,10 +1680,11 @@
 
         </div>
         <!-- end app-container -->
+
     </main>
 
     <!-- ============================================================
-    FOOTER – Original Dark Blue (from snippet)
+    FOOTER – Original Dark Blue
     ============================================================ -->
     <footer>
         <div class="design-footer">
@@ -1243,14 +1699,25 @@
 </footer>
 
 <!-- ============================================================
-JAVASCRIPT – Complete Application Logic
+JAVASCRIPT – Complete Application Logic (unchanged)
 ============================================================ -->
 <script>
     (function() {
         'use strict';
 
         // ============================================================
-        // DOM References
+        // Voice Tools Navigation – TTS card is now a direct link
+        // ============================================================
+        const sttCard = document.getElementById('sttCard');
+        sttCard.addEventListener('click', function() {
+            sttCard.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                sttCard.style.transform = '';
+            }, 200);
+        });
+
+        // ============================================================
+        // DOM References for Speech to Text
         // ============================================================
         const transcriptionBox = document.getElementById('transcriptionBox');
         const interimContainer = document.getElementById('interimContainer');
@@ -1282,7 +1749,8 @@ JAVASCRIPT – Complete Application Logic
         let timerInterval = null;
         let isRestarting = false;
         let isStarting = false;
-        let lastAddedFinal = '';
+        let lastAppendedText = ''; // last appended final text (trimmed)
+        let finalTimestamps = {}; // track timestamps per trimmed text to avoid duplicates within 1s
 
         // ============================================================
         // Speech Recognition Setup
@@ -1300,7 +1768,6 @@ JAVASCRIPT – Complete Application Logic
             recognition.onstart = function() {
                 isRecording = true;
                 isStarting = false;
-                lastAddedFinal = '';
                 updateUIForRecording();
                 setStatus('listening', 'Listening…');
                 showCompatBanner('success', '🎤 Listening… Speak into your microphone.');
@@ -1308,7 +1775,7 @@ JAVASCRIPT – Complete Application Logic
 
             recognition.onresult = function(event) {
                 let interim = '';
-                let final = '';
+                let finalChunks = [];
 
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     const result = event.results[i];
@@ -1316,20 +1783,20 @@ JAVASCRIPT – Complete Application Logic
 
                     if (result.isFinal) {
                         const trimmed = transcript.trim();
-                        if (trimmed && trimmed !== lastAddedFinal.trim()) {
-                            final += transcript + ' ';
-                            lastAddedFinal = trimmed;
+                        if (trimmed) {
+                            finalChunks.push(trimmed);
                         }
                     } else {
                         interim += transcript;
                     }
                 }
 
-                if (final) {
-                    finalTranscript += final;
+                // Process final chunks with duplicate prevention
+                for (let chunk of finalChunks) {
+                    appendFinalText(chunk);
                 }
-                interimTranscript = interim;
 
+                interimTranscript = interim;
                 updateTranscriptionDisplay();
                 updateStats();
             };
@@ -1403,6 +1870,40 @@ JAVASCRIPT – Complete Application Logic
         // Core Functions
         // ============================================================
 
+        // Append a final text chunk with duplicate prevention (1s window)
+        function appendFinalText(text) {
+            const trimmed = text.trim();
+            if (!trimmed) return;
+
+            const now = Date.now();
+            // If we have a timestamp for this exact text and it's within 1 second, skip (duplicate)
+            if (finalTimestamps[trimmed] && (now - finalTimestamps[trimmed] < 1000)) {
+                // Duplicate, ignore
+                return;
+            }
+
+            // Update timestamp
+            finalTimestamps[trimmed] = now;
+
+            // Append to finalTranscript with a space separator
+            if (finalTranscript) {
+                finalTranscript += ' ' + trimmed;
+            } else {
+                finalTranscript = trimmed;
+            }
+            lastAppendedText = trimmed;
+            // Clear any old timestamps to prevent memory leak (keep last 100)
+            const keys = Object.keys(finalTimestamps);
+            if (keys.length > 100) {
+                // Remove oldest (sort by timestamp)
+                keys.sort((a, b) => finalTimestamps[a] - finalTimestamps[b]);
+                const toRemove = keys.slice(0, keys.length - 100);
+                for (let k of toRemove) {
+                    delete finalTimestamps[k];
+                }
+            }
+        }
+
         function startRecording() {
             if (!isSupported || !recognition) {
                 showCompatBanner('error', '❌ Speech recognition is not supported in this browser.');
@@ -1441,12 +1942,9 @@ JAVASCRIPT – Complete Application Logic
             stopTimer();
             updateUIForStopped();
 
-            if (interimTranscript) {
-                const trimmed = interimTranscript.trim();
-                if (trimmed && trimmed !== lastAddedFinal.trim()) {
-                    finalTranscript += interimTranscript + ' ';
-                    lastAddedFinal = trimmed;
-                }
+            // If there is interim text, append it (with duplicate check)
+            if (interimTranscript.trim()) {
+                appendFinalText(interimTranscript.trim());
                 interimTranscript = '';
                 updateTranscriptionDisplay();
                 updateStats();
@@ -1531,7 +2029,7 @@ JAVASCRIPT – Complete Application Logic
         }
 
         function updateStats() {
-            const text = finalTranscript + interimTranscript;
+            const text = finalTranscript + (interimTranscript ? ' ' + interimTranscript : '');
             const words = text.trim() ? text.trim().split(/\s+/).length : 0;
             const chars = text.replace(/\s/g, '').length;
             wordCountEl.textContent = words;
@@ -1582,7 +2080,7 @@ JAVASCRIPT – Complete Application Logic
         // ============================================================
 
         function copyText() {
-            const text = finalTranscript + interimTranscript;
+            const text = finalTranscript + (interimTranscript ? ' ' + interimTranscript : '');
             if (!text.trim()) {
                 showCompatBanner('error', '📋 Nothing to copy — transcription is empty.');
                 return;
@@ -1626,7 +2124,8 @@ JAVASCRIPT – Complete Application Logic
             if (isRecording) stopRecording();
             finalTranscript = '';
             interimTranscript = '';
-            lastAddedFinal = '';
+            lastAppendedText = '';
+            finalTimestamps = {};
             updateTranscriptionDisplay();
             updateStats();
             resetTimer();
@@ -1636,18 +2135,29 @@ JAVASCRIPT – Complete Application Logic
         }
 
         function downloadText() {
-            const text = finalTranscript + interimTranscript;
+            const text = finalTranscript + (interimTranscript ? ' ' + interimTranscript : '');
             if (!text.trim()) {
                 showCompatBanner('error', '📥 Nothing to download — transcription is empty.');
                 return;
             }
             const plainText = text.trim();
+
+            // Build clean filename: speech-to-text-YYYY-MM-DD-HH-MM-SS.txt
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            const year = now.getFullYear();
+            const month = pad(now.getMonth() + 1);
+            const day = pad(now.getDate());
+            const hours = pad(now.getHours());
+            const minutes = pad(now.getMinutes());
+            const seconds = pad(now.getSeconds());
+            const filename = `speech-to-text-${year}-${month}-${day}-${hours}-${minutes}-${seconds}.txt`;
+
             const blob = new Blob([plainText], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
-            a.download = 'transcript-' + timestamp + '.txt';
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1672,7 +2182,8 @@ JAVASCRIPT – Complete Application Logic
             if (isRecording) stopRecording();
             finalTranscript = '';
             interimTranscript = '';
-            lastAddedFinal = '';
+            lastAppendedText = '';
+            finalTimestamps = {};
             updateTranscriptionDisplay();
             updateStats();
             resetTimer();
